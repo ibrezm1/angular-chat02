@@ -28,6 +28,8 @@ export class PromptContainerComponent {
   'Translate content'];
 
   userInput: string = '';
+  showProcessing = false; // Show processing indicator
+
 
   ngAfterViewInit() {
     this.scrollToBottom();
@@ -54,19 +56,23 @@ export class PromptContainerComponent {
 
     this.userInput = input;
     this.prompts.push({ type: 'human', message: input });
-    // Simulate AI response
-    this.prompts.push({ type: 'ai', message: 'AI response to: ' + randomLoremIpsum });
-
+  
     // add a delay of 1 sec 
-    setTimeout(() => {
-      // increment the last message pushed to the prompts array
-      var updatedMessage:string = "randomLoremIpsum"
-      this.prompts[this.prompts.length - 1].message = 'AI response to: ' + updatedMessage;
-      // rerender the last message pushed to the prompts array in angular
-      this.prompts[this.prompts.length - 1] = { ...this.prompts[this.prompts.length - 1], message: updatedMessage };
-
-      console.log('AI response to: ' + updatedMessage);
-    }, 2000);
+    const aiResponseChunks = randomLoremIpsum.match(/.{1,20}/g) || []; // Split the response into chunks of 20 characters
+    var updatedMessage = '';
+      // Simulate AI response
+      this.prompts.push({ type: 'ai', message: '' });
+      this.showProcessing = true;
+    aiResponseChunks.forEach((chunk, index) => {
+      setTimeout(() => {
+        updatedMessage = updatedMessage + chunk;
+        this.prompts[this.prompts.length - 1] = { ...this.prompts[this.prompts.length - 1], message: updatedMessage };
+        this.scrollToBottom();
+        if (index === aiResponseChunks.length - 1) {
+          this.showProcessing = false;
+        }
+      }, (index + 1) * 1000);
+    });
 
     // Scroll to the bottom of the chat
     this.scrollToBottom();

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-prompt-input',
@@ -7,6 +7,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class PromptInputComponent {
   userInput: string = '';
+  @Input() showprocessing: boolean = false;
   
   @Output() inputSubmitted: EventEmitter<string> = new EventEmitter<string>();
 
