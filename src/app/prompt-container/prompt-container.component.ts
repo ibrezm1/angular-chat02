@@ -71,7 +71,7 @@ export class PromptContainerComponent {
         if (index === aiResponseChunks.length - 1) {
           this.showProcessing = false;
         }
-      }, (index + 1) * 1000);
+      }, (index + 1) * 200);
     });
 
     // Scroll to the bottom of the chat

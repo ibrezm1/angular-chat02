@@ -11,7 +11,10 @@
     </ng-container>
 
 
-    <app-prompt-suggestions [buttonLabels]="buttonLabels"></app-prompt-suggestions>
+    
     <!-- Prompt message input -->
-    <app-prompt-input (inputSubmitted)="handleInputSubmitted($event)" [showprocessing]="showProcessing"></app-prompt-input>
+    <app-prompt-input [buttonLabels]="buttonLabels" 
+                    (inputSubmitted)="handleInputSubmitted($event)" 
+                    [showProcessing]="showProcessing"></app-prompt-input>
+
   </div>

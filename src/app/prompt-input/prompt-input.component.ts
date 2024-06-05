@@ -7,7 +7,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class PromptInputComponent {
   userInput: string = '';
-  @Input() showprocessing: boolean = false;
+  @Input() buttonLabels!: string[];
+  @Input() showProcessing: boolean = false;
   
   @Output() inputSubmitted: EventEmitter<string> = new EventEmitter<string>();
 
@@ -26,4 +27,8 @@ export class PromptInputComponent {
     }
     this.userInput = '';
   }
+  submitWithLabel(label: string): void {
+    this.inputSubmitted.emit(label);
+  }
+
 }
