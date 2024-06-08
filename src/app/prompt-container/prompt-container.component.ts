@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { StreamService } from '../stream.service';
 
 @Component({
   selector: 'app-prompt-container',
@@ -30,6 +31,7 @@ export class PromptContainerComponent {
   userInput: string = '';
   showProcessing = false; // Show processing indicator
 
+  constructor(private streamService: StreamService) {}
 
   ngAfterViewInit() {
     this.scrollToBottom();
