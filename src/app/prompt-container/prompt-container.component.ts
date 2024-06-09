@@ -38,43 +38,28 @@ export class PromptContainerComponent {
   }
 
   
-  handleInputSubmitted(input: string): void {
+  handleInputSubmitted(eventData: { input: string, model: string }): void {
 
-  // Function to generate random length Lorem Ipsum
-  const generateLoremIpsum = (): string => {
-    const wordCount = Math.floor(Math.random() * (200 - 50 + 1)) + 5;
-    const loremIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-    const words = loremIpsum.split(' ');
-    let result = [];
-    for (let i = 0; i < wordCount; i++) {
-      result.push(words[i % words.length]);
-    }
-    return result.join(' ');
-  };
-
-    // Generate a random word count between 5 and 20
-    
-    const randomLoremIpsum = generateLoremIpsum();
-
-    this.userInput = input;
+    this.userInput = eventData.input;
+    var model = eventData.model;
+    var input = this.userInput;
     this.prompts.push({ type: 'human', message: input });
   
-    // add a delay of 1 sec 
-    const aiResponseChunks = randomLoremIpsum.match(/.{1,20}/g) || []; // Split the response into chunks of 20 characters
     var updatedMessage = '';
       // Simulate AI response
       this.prompts.push({ type: 'ai', message: '' });
       this.showProcessing = true;
-    aiResponseChunks.forEach((chunk, index) => {
-      setTimeout(() => {
-        updatedMessage = updatedMessage + chunk;
-        this.prompts[this.prompts.length - 1] = { ...this.prompts[this.prompts.length - 1], message: updatedMessage };
-        this.scrollToBottom();
-        if (index === aiResponseChunks.length - 1) {
-          this.showProcessing = false;
-        }
-      }, (index + 1) * 200);
-    });
+      this.streamService.streamMessage(input,model).subscribe(
+        (data: string) => {
+        //updatedMessage = updatedMessage + data;
+        this.prompts[this.prompts.length - 1] = { ...this.prompts[this.prompts.length - 1], message: data };
+        this.scrollToBottom(); 
+      },
+      (error: any) => console.error(error),
+      () => {
+        this.showProcessing = false;
+        console.log('Streaming complete');
+      });
 
     // Scroll to the bottom of the chat
     this.scrollToBottom();
@@ -84,11 +69,9 @@ export class PromptContainerComponent {
 
   scrollToBottom(): void {
     setTimeout(() => {
-      const chat = document.getElementById('chat');
-      if (chat) {
-        chat.scrollTop = chat.scrollHeight;
-      }
-    });
+      const chatInput = document.getElementById('chat-input');
+      chatInput!.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 100); // Adjust the delay as needed
   }
 
 }

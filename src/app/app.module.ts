@@ -10,6 +10,7 @@ import { PromptSuggestionsComponent } from './prompt-suggestions/prompt-suggesti
 import { PromptInputComponent } from './prompt-input/prompt-input.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { FormsModule } from '@angular/forms';
+import { PromptSidebarComponent } from './prompt-sidebar/prompt-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { FormsModule } from '@angular/forms';
     PromptMessageComponent,
     AiPromptMessageComponent,
     PromptSuggestionsComponent,
-    PromptInputComponent
+    PromptInputComponent,
+    PromptSidebarComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,8 @@
 <!-- Prompt Messages Container - Modify the height according to your need -->
-<div class="flex h-[97vh] w-full flex-col">
-    <!-- Prompt Messages -->
+
+
+<div class="flex h-screen overflow-y-auto w-full flex-col">
+    <!-- Prompt Messages Removed overflow-y-auto from chat class may be needed if we put inside another contaner -->
     <div id="chat" 
       class="flex-1 overflow-y-auto rounded-xl bg-slate-200 p-4 text-sm leading-6 text-slate-900 dark:bg-slate-800 dark:text-slate-300 sm:text-base sm:leading-7"
     >
@@ -14,7 +16,7 @@
     
     <!-- Prompt message input -->
     <app-prompt-input [buttonLabels]="buttonLabels" 
-                    (inputSubmitted)="handleInputSubmitted($event)" 
+                    (inputSubmitted)="handleInputSubmitted($event)"
                     [showProcessing]="showProcessing"></app-prompt-input>
 
   </div>

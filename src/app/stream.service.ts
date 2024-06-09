@@ -6,12 +6,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class StreamService {
-  streamMessage(url: string, message: string): Observable<string> {
+  stream_url = 'http://localhost:5001/stream-content';
+  //stream_url = 'http://localhost:5001/stream-gemini';
+  streamMessage(message: string,model: string): Observable<string> {
     return new Observable(observer => {
-      fetch(url, {
+      fetch(this.stream_url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: message })
+        body: JSON.stringify({ message: message, model: model})
       })
       .then(response => response.body!.getReader())
       .then(reader => {
