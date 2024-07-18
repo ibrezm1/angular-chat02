@@ -67,7 +67,7 @@
             const input = document.getElementById(inputId);
             const body = document.getElementById(bodyId);
 
-            const response = await fetch("/stream-gemini", {
+            const response = await fetch("/stream-content", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({ message: input.value })

@@ -4,14 +4,34 @@ import time
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
+import base64
+
 
 # Load environment variables
 load_dotenv()
 
+# Replace these credentials with your actual authentication data
+VALID_USERNAME = 'admin22'
+VALID_PASSWORD = 'pass22'
+
+def authenticate(auth_header):
+    if not auth_header:
+        return False
+    
+    auth_type, encoded_credentials = auth_header.split()
+    if auth_type.lower() != 'basic':
+        return False
+    
+    decoded_credentials = base64.b64decode(encoded_credentials).decode('utf-8')
+    username, password = decoded_credentials.split(':')
+    
+    return username == VALID_USERNAME and password == VALID_PASSWORD
+
+
 app = Flask(__name__)
 
 # Configure CORS
-CORS(app, resources={"/": {"origins": ["http://localhost:4200"]}})
+CORS(app)#, resources={"/": {"origins": ["http://localhost:4200"]}})
 
 # Configure Google Generative AI
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
@@ -37,10 +57,32 @@ def build_cors_preflight_response():
 def index():
     return render_template("index.html")
 
+@app.route("/hello", methods=["GET"])
+def hello():
+    return "Hello, World!"
+
+@app.route('/authenticate', methods=["GET", "POST", "OPTIONS"])
+def authenticate_user():
+    if request.method == 'OPTIONS':
+        return build_cors_preflight_response()
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    
+    if username == VALID_USERNAME and password == VALID_PASSWORD:
+        return jsonify(success=True), 200
+    else:
+        return jsonify(success=False), 401
+
 @app.route('/stream-content', methods=["GET", "POST", "OPTIONS"])
 def streamContent():
     if request.method == 'OPTIONS':
         return build_cors_preflight_response()
+
+    auth_header = request.headers.get('Authorization')
+    
+    if not authenticate(auth_header):
+        return jsonify({"error": "Unauthorized"}), 401
 
     if request.method == 'POST':
         if request.headers['Content-Type'] != 'application/json':
@@ -74,5 +116,7 @@ def streamContent():
     else:
         return jsonify({"error": "Method not allowed"}), 405
 
+
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001, host='0.0.0.0')

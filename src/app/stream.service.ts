@@ -1,6 +1,7 @@
 // stream.service.ts
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +10,17 @@ export class StreamService {
   stream_url = 'http://localhost:5001/stream-content';
   //stream_url = 'http://localhost:5001/stream-gemini';
   streamMessage(message: string,model: string): Observable<string> {
+
+    const authData = localStorage.getItem('authData');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Basic ${authData}`
+    });
+
     return new Observable(observer => {
       fetch(this.stream_url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Basic ${authData}` },
         body: JSON.stringify({ message: message, model: model})
       })
       .then(response => response.body!.getReader())

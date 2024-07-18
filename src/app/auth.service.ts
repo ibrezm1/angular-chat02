@@ -1,25 +1,44 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private isAuthenticated = false;
+  private authUrl = 'http://localhost:5001/authenticate';  // Your Flask authentication URL
 
-  login(username: string, password: string): boolean {
-    // Implement your login logic here
-    if (username === 'admin' && password === 'password') {
-      this.isAuthenticated = true;
-      return true;
-    }
-    return false;
+  constructor(private http: HttpClient) {}
+
+  login(username: string, password: string): Observable<boolean> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = JSON.stringify({ username, password });
+
+    return this.http.post<{ success: boolean }>(this.authUrl, body, { headers })
+      .pipe(
+        map(response => {
+          this.isAuthenticated = response.success;
+          return response.success;
+        }),
+        catchError(error => {
+          console.error('Login error', error);
+          return [false];
+        })
+      );
   }
 
   logout() {
     this.isAuthenticated = false;
+    localStorage.removeItem('authData');
   }
 
   getAuthStatus(): boolean {
     return this.isAuthenticated;
+  }
+
+  getAuthData(): string | null {
+    return localStorage.getItem('authData');
   }
 }
