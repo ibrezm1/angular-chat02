@@ -3,11 +3,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+// import environment 
+import { environment } from '../environments/environment';
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class StreamService {
-  stream_url = 'http://localhost:5001/stream-content';
+  stream_url = environment.apiUrl +  '/stream-content';
   //stream_url = 'http://localhost:5001/stream-gemini';
   streamMessage(message: string,model: string): Observable<string> {
 

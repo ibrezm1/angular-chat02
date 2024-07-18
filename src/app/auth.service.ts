@@ -3,12 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import { environment } from '../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private isAuthenticated = false;
-  private authUrl = 'http://localhost:5001/authenticate';  // Your Flask authentication URL
+  private authUrl =  environment.apiUrl +  '/authenticate';  // Your Flask authentication URL
 
   constructor(private http: HttpClient) {}
 
